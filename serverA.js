@@ -9,7 +9,7 @@ MockApp.engine('.html', require('ejs').__express);
 MockApp.set('view engine', 'html');
 MockApp.use('/common/',express.static('views/common'));
 MockApp.use('/miAssets/',express.static('views/miAssets'));
-
+MockApp.use('/audio/', express.static('audio'));
 // if(process.env.NODE_ENV=='mock'){
     MockApp.get(`/api/wx/*`, function(req, res){
         console.log(`wx`);
@@ -17,6 +17,10 @@ MockApp.use('/miAssets/',express.static('views/miAssets'));
             info = JSON.parse(_info);
         res.json(info);
     });
+    
+    // MockApp.get(`/api/wx/1.mp3`, function(req, res){
+    //     res.download(`${__dirname}/apiDatas`, '1.mp3');
+    // })
     for(let key in Api.COMMON){
         MockApp.use(`/api${Api.COMMON[key]}`, function(req, res){
             console.log(`/api${Api.COMMON[key]}`);
