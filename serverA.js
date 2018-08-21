@@ -1,12 +1,15 @@
 const express = require('express');
 const MockApp = new express();
+const expressWs = require('express-ws')(MockApp);
 const Api = require('./Api');
 const fs = require('fs');
 const path = require('path');
 const expressproxy = require('express-http-proxy');
 
+
 MockApp.engine('.html', require('ejs').__express);
 MockApp.set('view engine', 'html');
+MockApp.use('/pages/',express.static('views'));
 MockApp.use('/common/',express.static('views/common'));
 MockApp.use('/miAssets/',express.static('views/miAssets'));
 MockApp.use('/audio/', express.static('audio'));
@@ -55,6 +58,16 @@ function sendApiData(res, key){
     }
     res.json(info);
 }
+MockApp.ws('/', function(ws, req) {
+    ws.on('message', function(msg) {
+      console.log(msg);
+    });
+    setInterval(
+        () => ws.send(`${new Date()}`),
+        1000
+    )
+    console.log('socket', req.testing);
+});
 MockApp.listen(9001, () => {
     console.log('Mock server on http://localhost:9001');
 });
